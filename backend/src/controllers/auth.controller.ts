@@ -1,0 +1,106 @@
+import { Request, Response, NextFunction } from 'express';
+import jwt from 'jsonwebtoken';
+import { User } from '../models/User';
+
+const generateToken = (id: string, email: string, role: string): string => {
+  const secret = process.env.JWT_SECRET || 'secret';
+  return jwt.sign({ id, email, role }, secret, {
+    expiresIn: (process.env.JWT_EXPIRE || '24h') as any,
+  });
+};
+
+/**
+ * Handle new user registration.
+ */
+export const register = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const { name, email, password, role } = req.body;
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      res.status(400).json({
+        success: false,
+        message: 'A user with this email address already exists.',
+      });
+      return;
+    }
+
+    const user = new User({
+      name,
+      email,
+      password,
+      role: role || 'user',
+    });
+
+    await user.save();
+
+    const token = generateToken(user._id.toString(), user.email, user.role);
+
+    res.status(201).json({
+      success: true,
+      message: 'User registered successfully.',
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        totalPoints: user.totalPoints,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Handle user login / token generation.
+ */
+export const login = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      res.status(400).json({
+        success: false,
+        message: 'Please provide both email and password.',
+      });
+      return;
+    }
+
+    const user = await User.findOne({ email }).select('+password');
+    if (!user) {
+      res.status(401).json({
+        success: false,
+        message: 'Invalid credentials.',
+      });
+      return;
+    }
+
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) {
+      res.status(401).json({
+        success: false,
+        message: 'Invalid credentials.',
+      });
+      return;
+    }
+
+    const token = generateToken(user._id.toString(), user.email, user.role);
+
+    res.status(200).json({
+      success: true,
+      message: 'Logged in successfully.',
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        totalPoints: user.totalPoints,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
