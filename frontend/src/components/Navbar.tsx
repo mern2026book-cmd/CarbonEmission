@@ -15,7 +15,7 @@ export const Navbar: React.FC = () => {
     <nav className="navbar">
       <div className="navbar-container">
         <Link to={user ? '/' : '/login'} className="navbar-brand">
-          <span>🌱</span> EcoTrace
+          <span role="img" aria-label="Seedling">🌱</span> EcoTrace
         </Link>
         
         <div className="navbar-menu">

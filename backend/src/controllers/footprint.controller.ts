@@ -95,7 +95,7 @@ export const getFootprintHistory = async (
       return;
     }
 
-    const logs = await Footprint.find({ userId }).sort({ createdAt: -1 });
+    const logs = await Footprint.find({ userId }).sort({ createdAt: -1 }).lean();
 
     res.status(200).json({
       success: true,
