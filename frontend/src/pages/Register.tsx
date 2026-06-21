@@ -49,7 +49,7 @@ export const Register: React.FC = () => {
       <section className="auth-card glass-card">
         <header className="auth-header">
           <h2>Create Account</h2>
-          <p>Join EcoTrace and start earning sustainability points</p>
+          <p>Join CarbonSentry and start earning sustainability points</p>
         </header>
 
         {error && <div className="alert-error" role="alert" aria-live="assertive">{error}</div>}

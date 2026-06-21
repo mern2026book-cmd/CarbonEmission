@@ -78,13 +78,13 @@ export const Dashboard: React.FC = () => {
   // Badge Level Helpers
   const getLevelInfo = (points: number) => {
     if (points <= 100) {
-      return { levelName: 'Eco Novice', min: 0, max: 100, nextName: 'Green Guardian' };
+      return { levelName: 'Sentry Initiate', min: 0, max: 100, nextName: 'Green Sentinel' };
     } else if (points <= 300) {
-      return { levelName: 'Green Guardian', min: 100, max: 300, nextName: 'Carbon Crusader' };
+      return { levelName: 'Green Sentinel', min: 100, max: 300, nextName: 'Carbon Champion' };
     } else if (points <= 500) {
-      return { levelName: 'Carbon Crusader', min: 300, max: 500, nextName: 'Eco Champion' };
+      return { levelName: 'Carbon Champion', min: 300, max: 500, nextName: 'Eco Ambassador' };
     } else {
-      return { levelName: 'Eco Champion', min: 500, max: 1000, nextName: 'Max Level Reached' };
+      return { levelName: 'Eco Ambassador', min: 500, max: 1000, nextName: 'Max Level Reached' };
     }
   };
 
@@ -173,21 +173,21 @@ export const Dashboard: React.FC = () => {
         setChallenges([
           {
             id: '1',
-            title: 'No Car Day',
+            title: 'Eco-Transit Day',
             description: 'Use public transport, bike, or walk for all your commutes today.',
             pointsReward: 50,
             durationDays: 1,
           },
           {
             id: '2',
-            title: 'Energy Saver',
+            title: 'Grid Power-Down',
             description: 'Turn off all non-essential appliances and air conditioning for 4 hours.',
             pointsReward: 30,
             durationDays: 1,
           },
           {
             id: '3',
-            title: 'Plant-Based Diet',
+            title: 'Green Platter Challenge',
             description: 'Eat only vegetarian or vegan meals today to reduce food footprint.',
             pointsReward: 40,
             durationDays: 1,

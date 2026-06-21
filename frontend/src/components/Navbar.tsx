@@ -45,7 +45,7 @@ export const Navbar: React.FC = () => {
     <nav className="navbar">
       <div className="navbar-container">
         <Link to={user ? '/' : '/login'} className="navbar-brand">
-          <Logo /> EcoTrace
+          <Logo /> CarbonSentry
         </Link>
         
         <div className="navbar-menu">

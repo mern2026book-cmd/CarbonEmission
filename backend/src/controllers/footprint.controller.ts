@@ -118,21 +118,21 @@ export const getChallenges = async (
     const challenges = [
       {
         id: '1',
-        title: 'No Car Day',
+        title: 'Eco-Transit Day',
         description: 'Use public transport, bike, or walk for all your commutes today.',
         pointsReward: 50,
         durationDays: 1,
       },
       {
         id: '2',
-        title: 'Energy Saver',
+        title: 'Grid Power-Down',
         description: 'Turn off all non-essential appliances and air conditioning for 4 hours.',
         pointsReward: 30,
         durationDays: 1,
       },
       {
         id: '3',
-        title: 'Plant-Based Diet',
+        title: 'Green Platter Challenge',
         description: 'Eat only vegetarian or vegan meals today to reduce food footprint.',
         pointsReward: 40,
         durationDays: 1,
@@ -169,9 +169,9 @@ export const completeChallenge = async (
     }
 
     const challenges = [
-      { id: '1', title: 'No Car Day', pointsReward: 50 },
-      { id: '2', title: 'Energy Saver', pointsReward: 30 },
-      { id: '3', title: 'Plant-Based Diet', pointsReward: 40 },
+      { id: '1', title: 'Eco-Transit Day', pointsReward: 50 },
+      { id: '2', title: 'Grid Power-Down', pointsReward: 30 },
+      { id: '3', title: 'Green Platter Challenge', pointsReward: 40 },
     ];
 
     const challenge = challenges.find((c) => c.id === id);

@@ -25,16 +25,16 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [token, setToken] = useState<string | null>(() => localStorage.getItem('ecotrace_token'));
+  const [token, setToken] = useState<string | null>(() => localStorage.getItem('carbonsentry_token'));
   const [user, setUser] = useState<User | null>(() => {
-    const storedUser = localStorage.getItem('ecotrace_user');
+    const storedUser = localStorage.getItem('carbonsentry_user');
     return storedUser ? JSON.parse(storedUser) : null;
   });
-  const [loading, setLoading] = useState<boolean>(!!localStorage.getItem('ecotrace_token'));
+  const [loading, setLoading] = useState<boolean>(!!localStorage.getItem('carbonsentry_token'));
 
   React.useEffect(() => {
     const verifySession = async () => {
-      const storedToken = localStorage.getItem('ecotrace_token');
+      const storedToken = localStorage.getItem('carbonsentry_token');
       if (storedToken) {
         try {
           const response = await fetch(`${API_BASE_URL}/auth/me`, {
@@ -45,13 +45,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           const data = await response.json();
           if (response.ok && data.success) {
             setUser(data.user);
-            localStorage.setItem('ecotrace_user', JSON.stringify(data.user));
+            localStorage.setItem('carbonsentry_user', JSON.stringify(data.user));
           } else {
             // Token expired or invalid, clear session
             setToken(null);
             setUser(null);
-            localStorage.removeItem('ecotrace_token');
-            localStorage.removeItem('ecotrace_user');
+            localStorage.removeItem('carbonsentry_token');
+            localStorage.removeItem('carbonsentry_user');
           }
         } catch (error) {
           console.error('Session verification error:', error);
@@ -78,8 +78,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (response.ok && data.success) {
         setToken(data.token);
         setUser(data.user);
-        localStorage.setItem('ecotrace_token', data.token);
-        localStorage.setItem('ecotrace_user', JSON.stringify(data.user));
+        localStorage.setItem('carbonsentry_token', data.token);
+        localStorage.setItem('carbonsentry_user', JSON.stringify(data.user));
         return { success: true, message: 'Logged in successfully.' };
       } else {
         return { success: false, message: data.message || 'Login failed.' };
@@ -105,8 +105,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (response.ok && data.success) {
         setToken(data.token);
         setUser(data.user);
-        localStorage.setItem('ecotrace_token', data.token);
-        localStorage.setItem('ecotrace_user', JSON.stringify(data.user));
+        localStorage.setItem('carbonsentry_token', data.token);
+        localStorage.setItem('carbonsentry_user', JSON.stringify(data.user));
         return { success: true, message: 'Registered successfully.' };
       } else {
         return { success: false, message: data.message || 'Registration failed.' };
@@ -120,8 +120,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = () => {
     setToken(null);
     setUser(null);
-    localStorage.removeItem('ecotrace_token');
-    localStorage.removeItem('ecotrace_user');
+    localStorage.removeItem('carbonsentry_token');
+    localStorage.removeItem('carbonsentry_user');
   };
 
   const updatePoints = (additionalPoints: number) => {
@@ -132,7 +132,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         totalPoints: prevUser.totalPoints + additionalPoints,
         completedChallenges: prevUser.completedChallenges || [],
       };
-      localStorage.setItem('ecotrace_user', JSON.stringify(updated));
+      localStorage.setItem('carbonsentry_user', JSON.stringify(updated));
       return updated;
     });
   };
@@ -157,7 +157,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             totalPoints: data.data.totalPoints,
             completedChallenges: data.data.completedChallenges,
           };
-          localStorage.setItem('ecotrace_user', JSON.stringify(updated));
+          localStorage.setItem('carbonsentry_user', JSON.stringify(updated));
           return updated;
         });
         return { success: true, message: data.message };

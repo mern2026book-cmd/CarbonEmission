@@ -19,7 +19,7 @@ describe('Navbar Component', () => {
     );
 
     // Verify brand title is rendered
-    expect(screen.getByText(/EcoTrace/i)).toBeDefined();
+    expect(screen.getByText(/CarbonSentry/i)).toBeDefined();
 
     // Verify guest links are rendered
     expect(screen.getByText(/Login/i)).toBeDefined();
