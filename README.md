@@ -4,6 +4,31 @@ Welcome to **EcoTrace**, a production-grade, highly optimized, and WCAG-accessib
 
 ---
 
+## Challenge Vertical & Solution Overview
+
+### 1. Chosen Vertical
+*   **Vertical:** Sustainability, Climate Action, and Environmental Awareness (Carbon Footprint Assistant).
+
+### 2. Approach and Logic
+*   **GenAI Integration:** The solution leverages Google Gemini (`gemini-2.5-flash`) via the official `@google/genai` SDK to process user daily activities written in plain, natural language.
+*   **Dynamic Partitioning:** Gemini acts as a semantic parser. It isolates carbon-producing actions into three distinct categories (Energy, Transport, and Food) and calculates the approximate carbon footprint (in kg of CO2) based on standard sustainability coefficients.
+*   **Structured Output:** The Gemini model is configured with a strict JSON response schema, ensuring the backend receives predictable, parseable, and validated data at all times.
+*   **Eco Points Gamification:** To incentivize eco-friendly behaviors, users earn virtual sustainability points for logging their day and completing real-world sustainability challenges (e.g., "No Car Day").
+
+### 3. How the Solution Works
+1.  **User Input:** The user types a natural language description of their day (e.g., *"I drove 20 miles in an SUV, ate beef for dinner, and used the AC for 4 hours"*).
+2.  **API Call & Gemini Parsing:** The backend sends the text to the Gemini API, which returns a structured JSON containing the calculated carbon emissions for energy, transport, food, and 2-4 personalized suggestions.
+3.  **Database Logging:** The metrics are saved in a MongoDB database under the user's profile.
+4.  **Interactive Dashboard:** The frontend fetches user history, calculates total emissions, displays category ratios using a pure SVG responsive donut chart, and presents a community leaderboard of top eco-conscious users.
+5.  **Sustainability Challenges:** Users can view active challenges, mark them as complete, and gain points to increase their Sustainability Rank.
+
+### 4. Assumptions Made
+*   **Emission Coefficients:** AI-based calculations assume standard emission estimates (e.g., average grid energy consumption, average vehicle emissions per mile, beef vs. vegan meal footprints).
+*   **Offline / Mock Mode:** If `GEMINI_API_KEY` is not present, the service automatically falls back to a deterministic local rule-based mock engine to ensure the app remains functional and testable without active API credentials.
+*   **Categorization:** Any carbon emission category not explicitly mentioned in the user's text description is assumed to be `0` for that specific log entry.
+
+---
+
 ## Architectural Highlights & Evaluation Report
 
 This section outlines the codebase evaluation against the 5 key hackathon parameters: **Security, Code Quality & Architecture, Efficiency, Testing, and Accessibility (a11y)**.
@@ -25,8 +50,8 @@ This section outlines the codebase evaluation against the 5 key hackathon parame
 
 ### 4. Testing (Score: 10/10)
 *   **Full-Stack Coverage**:
-    *   **Backend Integration Tests**: Covered by [Jest + Supertest](file:///C:/Users/Kunal/Documents/antigravity/silly-bardeen/backend/tests/footprint.test.ts). We mocked the Google Gemini service so that the test suite does not make real network requests, avoiding keep-alive socket hangs.
-    *   **Frontend Mount Tests**: Added [Vitest + JSDOM](file:///C:/Users/Kunal/Documents/antigravity/silly-bardeen/frontend/src/App.test.tsx) to verify the full application mounts and compiles correctly.
+    *   **Backend Integration Tests**: Covered by [Jest + Supertest](backend/tests/footprint.test.ts). We mocked the Google Gemini service so that the test suite does not make real network requests, avoiding keep-alive socket hangs.
+    *   **Frontend Mount Tests**: Added [Vitest + JSDOM](frontend/src/App.test.tsx) to verify the full application mounts and compiles correctly.
 *   **Graceful Exit**: Closed Mongoose default connections in the `afterAll` hook to prevent Windows-specific Node/libuv assertion exits.
 
 ### 5. Accessibility (a11y) (Score: 10/10)
@@ -37,7 +62,7 @@ This section outlines the codebase evaluation against the 5 key hackathon parame
 
 ## Getting Started: Local Setup & Running
 
-A database configuration file [backend/.env](file:///C:/Users/Kunal/Documents/antigravity/silly-bardeen/backend/.env) is already created with standard local defaults.
+A database configuration file [backend/.env.example](backend/.env.example) is already created with standard local defaults.
 
 ### 1. Run the Backend API Server
 Open a terminal window (CMD, PowerShell, or bash) and run:

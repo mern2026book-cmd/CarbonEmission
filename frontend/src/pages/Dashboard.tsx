@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
@@ -32,25 +32,7 @@ export const Dashboard: React.FC = () => {
   // Leaderboard state
   const [leaderboard, setLeaderboard] = useState<{ name: string; totalPoints: number }[]>([]);
   const [leaderboardLoading, setLeaderboardLoading] = useState(true);
-
-  const fetchLeaderboard = async () => {
-    try {
-      const apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-      const response = await fetch(`${apiBaseUrl}/auth/leaderboard`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const data = await response.json();
-      if (response.ok && data.success) {
-        setLeaderboard(data.data);
-      }
-    } catch (err) {
-      console.error('Error fetching leaderboard:', err);
-    } finally {
-      setLeaderboardLoading(false);
-    }
-  };
+  const [leaderboardTrigger, setLeaderboardTrigger] = useState(0);
 
   const handleCompleteChallenge = async (challengeId: string) => {
     setCompletingId(challengeId);
@@ -59,7 +41,7 @@ export const Dashboard: React.FC = () => {
     setCompletingId(null);
     if (result.success) {
       setChallengeMessage({ id: challengeId, text: result.message, error: false });
-      fetchLeaderboard();
+      setLeaderboardTrigger(prev => prev + 1);
       // Clear message after 4 seconds
       setTimeout(() => {
         setChallengeMessage(prev => prev?.id === challengeId ? null : prev);
@@ -123,7 +105,7 @@ export const Dashboard: React.FC = () => {
     total: 0,
   });
 
-  const calculateTotals = (data: FootprintLog[]) => {
+  const calculateTotals = useCallback((data: FootprintLog[]) => {
     let energy = 0;
     let transport = 0;
     let food = 0;
@@ -142,7 +124,7 @@ export const Dashboard: React.FC = () => {
       food: parseFloat(food.toFixed(1)),
       total: parseFloat(total.toFixed(1)),
     });
-  };
+  }, []);
 
   useEffect(() => {
     const fetchHistory = async () => {
@@ -216,12 +198,31 @@ export const Dashboard: React.FC = () => {
       }
     };
 
+    const fetchLeaderboard = async () => {
+      try {
+        const apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+        const response = await fetch(`${apiBaseUrl}/auth/leaderboard`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await response.json();
+        if (response.ok && data.success) {
+          setLeaderboard(data.data);
+        }
+      } catch (err) {
+        console.error('Error fetching leaderboard:', err);
+      } finally {
+        setLeaderboardLoading(false);
+      }
+    };
+
     if (token) {
       fetchHistory();
       fetchChallenges();
       fetchLeaderboard();
     }
-  }, [token]);
+  }, [token, leaderboardTrigger, calculateTotals]);
 
   // Helper values for drawing SVG chart
   const energyPercentage = totals.total > 0 ? (totals.energy / totals.total) * 100 : 0;
