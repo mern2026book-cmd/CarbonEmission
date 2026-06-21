@@ -10,7 +10,7 @@ export const errorHandler = (
   error: any,
   req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ): void => {
   // Always log errors internally for monitoring and debugging
   console.error('[Error Handler Log]:', error);
